@@ -62,14 +62,14 @@ function createDefaultDashboard() {
     widgets: [
       { widgetId: "widget-name", config: {} },
       { widgetId: "widget-project-stats", config: {} },
+      { widgetId: "widget-my-tasks", config: {} },
+      { widgetId: "widget-team-tasks", config: {} },
       { widgetId: "widget-tracker-chart", config: {} },
       { widgetId: "widget-kanban", config: { boardId: "task-board" } },
       { widgetId: "widget-builds-history", config: {} },
       { widgetId: "widget-test-results", config: {} },
       { widgetId: "widget-contacts", config: {} },
-      { widgetId: "widget-last-pushes", config: {} },
-      { widgetId: "widget-note", config: { content: "Welcome to OpenForge Dashboard! Click 'Add Widget' to customize." } },
-      { widgetId: "widget-rss", config: {} }
+      { widgetId: "widget-note", config: { content: "Welcome to OpenForge Dashboard! Click 'Add Widget' to customize." } }
     ]
   };
   dashboards.push(defaultDash);
@@ -314,7 +314,6 @@ function createDashboard(preset, nameOverride) {
       { widgetId: "widget-jenkins-jobs", config: {} },
       { widgetId: "widget-test-results", config: {} },
       { widgetId: "widget-test-trend", config: {} },
-      { widgetId: "widget-last-pushes", config: {} },
       { widgetId: "widget-last-artifacts", config: {} }
     ],
     project: [

@@ -597,32 +597,108 @@ const WIDGET_REGISTRY = [
       </div>`;
     }
   },
+  // ── My Tasks (Role-Based) ──
   {
-    id: "widget-last-pushes",
-    name: "Last Git Pushes",
-    category: "source_code",
-    icon: "📤",
-    size: "medium",
+    id: "widget-my-tasks",
+    name: "My Tasks",
+    category: "project_management",
+    icon: "📋",
+    size: "large",
     defaultConfig: {},
     render() {
-      const pushes = [
-        { author: "Aditya Kumar Singh", branch: "main", message: "feat: add real OpenForge tasks, team members, admin role system", date: "2h ago", avatar: "#3b82f6" },
-        { author: "Aditya Kumar Singh", branch: "main", message: "Visual overhaul - premium dashboard with proper folder structure", date: "3h ago", avatar: "#3b82f6" },
-        { author: "Aditya Kumar Singh", branch: "main", message: "Add files via upload", date: "1d ago", avatar: "#3b82f6" },
-        { author: "Aditya Kumar Singh", branch: "main", message: "Initial commit", date: "1d ago", avatar: "#3b82f6" }
-      ];
-      return `<div style="display:flex;flex-direction:column;gap:6px">
-        ${pushes.map(p => `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg-primary);border-radius:10px;transition:all 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow=''">
-          <div style="width:32px;height:32px;border-radius:8px;background:${p.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0">${p.author.split(" ").map(n=>n[0]).join("")}</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-              <span style="font-weight:600;font-size:12px">${p.author}</span>
-              <span style="font-size:10px;color:var(--text-secondary)">${p.date}</span>
-            </div>
-            <div style="display:inline-block;padding:2px 6px;background:rgba(59,130,246,0.1);color:var(--accent);border-radius:4px;font-size:10px;font-weight:600;margin-bottom:4px">${p.branch}</div>
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.4">${p.message}</div>
+      const user = getCurrentUser();
+      const isAdminUser = isCurrentUserAdmin();
+      const myTasks = TASKS.filter(t => t.assignee.includes(user));
+      const openTasks = myTasks.filter(t => t.status === "open" || t.status === "backlog");
+      const qaTasks = myTasks.filter(t => t.status === "qa");
+      const doneTasks = myTasks.filter(t => t.status === "done");
+
+      const roleLabel = isAdminUser ? '<span style="padding:2px 8px;background:rgba(245,158,11,0.15);color:#f59e0b;border-radius:6px;font-size:10px;font-weight:700;margin-left:8px">ADMIN</span>' : "";
+
+      function renderTaskList(tasks, color, label) {
+        if (tasks.length === 0) return "";
+        return `<div style="margin-top:12px">
+          <div style="font-size:11px;font-weight:700;color:${color};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">${label} (${tasks.length})</div>
+          ${tasks.slice(0, 8).map(t => `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg-primary);border-radius:8px;margin-bottom:4px;border-left:3px solid ${color};font-size:12px;transition:all 0.15s" onmouseover="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow=''">
+            <span style="font-weight:700;color:var(--text-secondary);min-width:50px">#${t.id}</span>
+            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</span>
+            <span style="padding:2px 6px;background:${PRIORITY_COLORS[t.priority]}20;color:${PRIORITY_COLORS[t.priority]};border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase">${t.priority}</span>
+          </div>`).join("")}
+          ${tasks.length > 8 ? `<div style="text-align:center;padding:6px;font-size:11px;color:var(--text-secondary)">+ ${tasks.length - 8} more</div>` : ""}
+        </div>`;
+      }
+
+      return `<div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.08));border-radius:10px;margin-bottom:4px">
+          <div>
+            <div style="font-size:13px;font-weight:700">${user} ${roleLabel}</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${myTasks.length} tasks assigned</div>
           </div>
-        </div>`).join("")}
+          <div style="display:flex;gap:12px;text-align:center">
+            <div><div style="font-size:20px;font-weight:800;color:#3b82f6">${openTasks.length + qaTasks.length}</div><div style="font-size:9px;color:var(--text-secondary);text-transform:uppercase;font-weight:600">Active</div></div>
+            <div><div style="font-size:20px;font-weight:800;color:#10b981">${doneTasks.length}</div><div style="font-size:9px;color:var(--text-secondary);text-transform:uppercase;font-weight:600">Done</div></div>
+          </div>
+        </div>
+        ${renderTaskList(openTasks, "#3b82f6", "Open")}
+        ${renderTaskList(qaTasks, "#f59e0b", "In QA")}
+        ${renderTaskList(doneTasks, "#10b981", "Completed")}
+        ${myTasks.length === 0 ? '<div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:13px">No tasks assigned to you</div>' : ""}
+      </div>`;
+    }
+  },
+  // ── Team Tasks (Name-Wise) ──
+  {
+    id: "widget-team-tasks",
+    name: "Team Tasks",
+    category: "project_management",
+    icon: "👥",
+    size: "large",
+    defaultConfig: {},
+    render() {
+      const memberStats = ALL_MEMBERS.map(m => {
+        const memberTasks = TASKS.filter(t => t.assignee.includes(m.name));
+        const open = memberTasks.filter(t => t.status === "open" || t.status === "backlog").length;
+        const qa = memberTasks.filter(t => t.status === "qa").length;
+        const done = memberTasks.filter(t => t.status === "done").length;
+        const total = memberTasks.length;
+        return { ...m, open, qa, done, total };
+      }).filter(m => m.total > 0).sort((a, b) => b.total - a.total);
+
+      const totalOpen = memberStats.reduce((s, m) => s + m.open, 0);
+      const totalDone = memberStats.reduce((s, m) => s + m.done, 0);
+      const totalAll = memberStats.reduce((s, m) => s + m.total, 0);
+
+      return `<div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(59,130,246,0.08));border-radius:10px;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:600;color:var(--text-secondary)">${memberStats.length} team members with tasks</div>
+          <div style="display:flex;gap:14px;text-align:center">
+            <div><div style="font-size:18px;font-weight:800;color:#3b82f6">${totalOpen}</div><div style="font-size:9px;color:var(--text-secondary);text-transform:uppercase;font-weight:600">Open</div></div>
+            <div><div style="font-size:18px;font-weight:800;color:#10b981">${totalDone}</div><div style="font-size:9px;color:var(--text-secondary);text-transform:uppercase;font-weight:600">Done</div></div>
+            <div><div style="font-size:18px;font-weight:800;color:var(--text-primary)">${totalAll}</div><div style="font-size:9px;color:var(--text-secondary);text-transform:uppercase;font-weight:600">Total</div></div>
+          </div>
+        </div>
+        ${memberStats.map(m => {
+          const donePercent = m.total > 0 ? Math.round((m.done / m.total) * 100) : 0;
+          const barOpen = m.total > 0 ? (m.open / m.total) * 100 : 0;
+          const barQa = m.total > 0 ? (m.qa / m.total) * 100 : 0;
+          const barDone = m.total > 0 ? (m.done / m.total) * 100 : 0;
+          const adminBadge = isAdmin(m.name) ? '<span style="padding:1px 5px;background:rgba(245,158,11,0.15);color:#f59e0b;border-radius:3px;font-size:8px;font-weight:700;margin-left:4px">ADMIN</span>' : "";
+          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg-primary);border-radius:8px;margin-bottom:4px;transition:all 0.15s" onmouseover="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow=''">
+            <div style="width:30px;height:30px;border-radius:8px;background:${isAdmin(m.name) ? "#f59e0b" : "var(--accent)"};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;flex-shrink:0">${m.name.split(" ").map(n=>n[0]).join("").substring(0,2)}</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.name}${adminBadge}</span>
+                <span style="font-size:10px;color:var(--text-secondary)">${m.done}/${m.total} done</span>
+              </div>
+              <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:4px;background:var(--bg-secondary)">
+                <div style="width:${barOpen}%;background:#3b82f6;transition:width 0.3s"></div>
+                <div style="width:${barQa}%;background:#f59e0b;transition:width 0.3s"></div>
+                <div style="width:${barDone}%;background:#10b981;transition:width 0.3s"></div>
+              </div>
+            </div>
+          </div>`;
+        }).join("")}
+        ${memberStats.length === 0 ? '<div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:13px">No tasks assigned</div>' : ""}
       </div>`;
     }
   }
