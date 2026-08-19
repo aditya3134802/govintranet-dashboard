@@ -33,14 +33,14 @@ const PROJECT_DATA = {
   name: "Govintranet",
   description: "Private",
   trackers: [
-    { id: "bugs", name: "Bugs", icon: "\u{1F41B}", open: 2, total: 7, color: "#ef4444" },
-    { id: "change-requests", name: "Change Requests", icon: "\u{1F504}", open: 0, total: 1, color: "#f59e0b" },
-    { id: "patches", name: "Patches/Fixes", icon: "\u{1F527}", open: 0, total: 1, color: "#10b981" },
-    { id: "requirements", name: "Requirements", icon: "\u{1F4CB}", open: 4, total: 4, color: "#3b82f6" },
+    { id: "bugs", name: "Bugs", icon: "\u{1F41B}", open: 0, total: 0, color: "#ef4444" },
+    { id: "change-requests", name: "Change Requests", icon: "\u{1F504}", open: 0, total: 0, color: "#f59e0b" },
+    { id: "patches", name: "Patches/Fixes", icon: "\u{1F527}", open: 0, total: 0, color: "#10b981" },
+    { id: "requirements", name: "Requirements", icon: "\u{1F4CB}", open: 0, total: 0, color: "#3b82f6" },
     { id: "risks", name: "Risks", icon: "\u26A0\uFE0F", open: 0, total: 0, color: "#8b5cf6" },
     { id: "support", name: "Support Requests", icon: "\u{1F3A7}", open: 0, total: 0, color: "#06b6d4" },
     { id: "tasks", name: "Tasks", icon: "\u2705", open: 38, total: 83, color: "#3b82f6" },
-    { id: "user-stories", name: "User Stories", icon: "\u{1F4D6}", open: 2, total: 2, color: "#f97316" }
+    { id: "user-stories", name: "User Stories", icon: "\u{1F4D6}", open: 0, total: 0, color: "#f97316" }
   ],
   kanbanBoards: [
     { id: "bugs-board", name: "Bugs Tracker", tracker: "bugs", open: 2, closed: 5 },

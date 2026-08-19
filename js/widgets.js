@@ -228,11 +228,10 @@ const WIDGET_REGISTRY = [
     defaultConfig: {},
     render() {
       const builds = [
-        { id: "B-1042", status: "success", branch: "main", duration: "3m 24s", date: "2h ago", trigger: "Aditya K." },
-        { id: "B-1041", status: "success", branch: "feat/dashboard", duration: "4m 11s", date: "5h ago", trigger: "Rahul S." },
-        { id: "B-1040", status: "failed", branch: "fix/auth", duration: "2m 08s", date: "1d ago", trigger: "Priya P." },
-        { id: "B-1039", status: "success", branch: "main", duration: "3m 18s", date: "1d ago", trigger: "Aditya K." },
-        { id: "B-1038", status: "success", branch: "feat/ci", duration: "5m 02s", date: "2d ago", trigger: "Vikram S." }
+        { id: "B-1042", status: "success", branch: "main", duration: "3m 24s", date: "2h ago", trigger: "Aditya Kumar Singh" },
+        { id: "B-1041", status: "success", branch: "main", duration: "4m 11s", date: "3h ago", trigger: "Aditya Kumar Singh" },
+        { id: "B-1040", status: "failed", branch: "main", duration: "2m 08s", date: "1d ago", trigger: "Aditya Kumar Singh" },
+        { id: "B-1039", status: "success", branch: "main", duration: "3m 18s", date: "1d ago", trigger: "Aditya Kumar Singh" }
       ];
       const statusConfig = {
         success: { color: "#10b981", bg: "rgba(16,185,129,0.1)", label: "Passed" },
@@ -607,10 +606,10 @@ const WIDGET_REGISTRY = [
     defaultConfig: {},
     render() {
       const pushes = [
-        { author: "Aditya K.", branch: "main", message: "Fix auth microservice JWT validation", date: "2h ago", avatar: "#3b82f6" },
-        { author: "Rahul S.", branch: "feat/dashboard", message: "Add widget system for dashboard", date: "5h ago", avatar: "#8b5cf6" },
-        { author: "Priya P.", branch: "fix/mail", message: "Fix email notification for meetings", date: "1d ago", avatar: "#ec4899" },
-        { author: "Vikram S.", branch: "main", message: "Update DB schema constraints", date: "2d ago", avatar: "#10b981" }
+        { author: "Aditya Kumar Singh", branch: "main", message: "feat: add real OpenForge tasks, team members, admin role system", date: "2h ago", avatar: "#3b82f6" },
+        { author: "Aditya Kumar Singh", branch: "main", message: "Visual overhaul - premium dashboard with proper folder structure", date: "3h ago", avatar: "#3b82f6" },
+        { author: "Aditya Kumar Singh", branch: "main", message: "Add files via upload", date: "1d ago", avatar: "#3b82f6" },
+        { author: "Aditya Kumar Singh", branch: "main", message: "Initial commit", date: "1d ago", avatar: "#3b82f6" }
       ];
       return `<div style="display:flex;flex-direction:column;gap:6px">
         ${pushes.map(p => `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg-primary);border-radius:10px;transition:all 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow=''">
