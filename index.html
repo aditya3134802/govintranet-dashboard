@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenForge Govintranet - Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- ═══════ Sidebar ═══════ -->
+<aside class="sidebar">
+  <button class="sidebar-toggle" title="Toggle sidebar">«</button>
+
+  <div class="sidebar-header">
+    <div class="sidebar-logo">OF</div>
+    <span class="sidebar-logo-text">OpenForge</span>
+  </div>
+
+  <div class="sidebar-project">
+    <div class="sidebar-project-name">Govintranet</div>
+    <div class="sidebar-project-desc">Private</div>
+  </div>
+
+  <nav>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Navigation</div>
+      <a class="sidebar-item active" data-page="dashboard" href="#">
+        <span class="icon">📊</span><span class="sidebar-label">Dashboard</span>
+      </a>
+      <a class="sidebar-item" data-page="issues" href="#">
+        <span class="icon">📋</span><span class="sidebar-label">Issues</span>
+      </a>
+      <a class="sidebar-item" data-page="kanban" href="#">
+        <span class="icon">📌</span><span class="sidebar-label">Kanban</span>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Trackers</div>
+      <a class="sidebar-item" data-board="bugs-board" href="#">
+        <span class="icon">🐛</span><span class="sidebar-label">Bugs</span>
+        <span class="badge">2</span>
+      </a>
+      <a class="sidebar-item" data-board="cr-board" href="#">
+        <span class="icon">🔄</span><span class="sidebar-label">Change Requests</span>
+      </a>
+      <a class="sidebar-item" data-board="patches-board" href="#">
+        <span class="icon">🔧</span><span class="sidebar-label">Patches/Fixes</span>
+      </a>
+      <a class="sidebar-item" data-board="req-board" href="#">
+        <span class="icon">📋</span><span class="sidebar-label">Requirements</span>
+        <span class="badge">4</span>
+      </a>
+      <a class="sidebar-item" data-board="risk-board" href="#">
+        <span class="icon">⚠️</span><span class="sidebar-label">Risks</span>
+      </a>
+      <a class="sidebar-item" data-board="task-board" href="#">
+        <span class="icon">✅</span><span class="sidebar-label">Tasks</span>
+        <span class="badge">47</span>
+      </a>
+      <a class="sidebar-item" data-board="task-board" href="#">
+        <span class="icon">📖</span><span class="sidebar-label">User Stories</span>
+        <span class="badge">2</span>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Boards</div>
+      <a class="sidebar-item" data-board="task-board" href="#">
+        <span class="icon">📌</span><span class="sidebar-label">Task Board</span>
+      </a>
+      <a class="sidebar-item" data-board="bugs-board" href="#">
+        <span class="icon">🐛</span><span class="sidebar-label">Bug Board</span>
+      </a>
+      <a class="sidebar-item" data-board="req-board" href="#">
+        <span class="icon">📋</span><span class="sidebar-label">Requirement Board</span>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Shortcuts</div>
+      <a class="sidebar-item" href="#">
+        <span class="icon">📁</span><span class="sidebar-label">Files</span>
+      </a>
+      <a class="sidebar-item" href="#">
+        <span class="icon">📄</span><span class="sidebar-label">Documents</span>
+      </a>
+      <a class="sidebar-item" href="#">
+        <span class="icon">Wiki</span><span class="sidebar-label">Wiki</span>
+      </a>
+      <a class="sidebar-item" href="#">
+        <span class="icon">⚙️</span><span class="sidebar-label">Settings</span>
+      </a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ═══════ Main Content ═══════ -->
+<div class="main-content">
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <h1 id="page-title">Dashboard</h1>
+    </div>
+    <div class="top-bar-right">
+      <input type="text" id="global-search" placeholder="Search tasks..." class="filter-select" style="width:200px">
+      <button class="top-bar-btn" onclick="document.querySelector('.a11y-panel').classList.toggle('open')">♿ A11y</button>
+      <button class="top-bar-btn primary">+ New</button>
+      <div class="user-avatar" title="Aditya Kumar">AK</div>
+    </div>
+  </header>
+
+  <div class="content-area">
+
+    <!-- ═══════ PAGE: Dashboard ═══════ -->
+    <div id="page-dashboard" class="page active">
+
+      <!-- Dashboard Tabs -->
+      <div class="dashboard-tabs-bar" id="dashboard-tabs"></div>
+
+      <!-- Dashboard Toolbar -->
+      <div class="dashboard-toolbar" id="dashboard-toolbar">
+        <div class="dashboard-toolbar-left">
+          <button class="top-bar-btn primary" onclick="showAddWidgetModal()">+ Add Widget</button>
+          <button class="top-bar-btn" onclick="showCreateDashboardModal()">+ New Dashboard</button>
+        </div>
+        <div class="dashboard-toolbar-right">
+          <button class="top-bar-btn" onclick="copyEmbedCode()" title="Copy embed code for OpenForge">📋 Embed Code</button>
+        </div>
+      </div>
+
+      <!-- Widget Grid (dynamic) -->
+      <div class="widget-grid" id="widget-grid"></div>
+    </div>
+
+    <!-- ═══════ PAGE: Kanban ═══════ -->
+    <div id="page-kanban" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="section-title" style="margin:0">
+          📌 <span id="kanban-title">Task Board</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="top-bar-btn">+ Add new tasks</button>
+          <button class="top-bar-btn">Edit this Kanban</button>
+          <button class="top-bar-btn">Show reports</button>
+        </div>
+      </div>
+
+      <div class="kanban-controls">
+        <div class="filter-group">
+          <span class="filter-label">Tracker:</span>
+          <select class="filter-select" id="filter-tracker" onchange="onFilterChange()">
+            <option value="all">All</option>
+            <option value="tasks" selected>Tasks</option>
+            <option value="bugs">Bugs</option>
+            <option value="requirements">Requirements</option>
+            <option value="user-stories">User Stories</option>
+            <option value="change-requests">Change Requests</option>
+            <option value="patches">Patches/Fixes</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Project:</span>
+          <select class="filter-select" id="filter-project" onchange="onFilterChange()">
+            <option value="all">All Projects</option>
+            <option value="Govintranet">Govintranet</option>
+            <option value="Gov Application">Gov Application</option>
+            <option value="AI Meeting Intelligence">AI Meeting Intelligence</option>
+            <option value="Govintranet Database">Govintranet Database</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Security">Security</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Assignee:</span>
+          <select class="filter-select" id="filter-assignee" onchange="onFilterChange()">
+            <option value="all">Everyone</option>
+            <option value="Unassigned">Unassigned</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="kanban-board" id="kanban-columns"></div>
+    </div>
+
+    <!-- ═══════ PAGE: Issues ═══════ -->
+    <div id="page-issues" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="section-title" style="margin:0">📋 Issues</div>
+        <button class="top-bar-btn primary">+ New Issue</button>
+      </div>
+      <table class="issues-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Project</th>
+            <th>Assignee</th>
+          </tr>
+        </thead>
+        <tbody id="issues-tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════ Accessibility Panel ═══════ -->
+<button class="a11y-trigger" title="Accessibility Options">♿</button>
+
+<div class="a11y-panel">
+  <div class="a11y-panel-header">
+    <h2>Accessibility Options</h2>
+    <button class="a11y-close">✕</button>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">Text</div>
+    <div class="a11y-option">
+      <label>Bigger Text</label>
+      <input type="range" class="a11y-slider" id="a11y-slider-fontSize" min="0" max="2" value="0"
+             oninput="onA11ySlider('fontSize', this.value)">
+    </div>
+    <div class="a11y-option">
+      <label>Text Spacing</label>
+      <input type="range" class="a11y-slider" id="a11y-slider-textSpacing" min="0" max="2" value="0"
+             oninput="onA11ySlider('textSpacing', this.value)">
+    </div>
+    <div class="a11y-option">
+      <label>Line Height</label>
+      <input type="range" class="a11y-slider" id="a11y-slider-lineHeight" min="0" max="2" value="0"
+             oninput="onA11ySlider('lineHeight', this.value)">
+    </div>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">Reading</div>
+    <div class="a11y-option">
+      <label for="a11y-dyslexia">Dyslexia Friendly</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-dyslexia" onchange="toggleA11y('dyslexia-mode', this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="a11y-option">
+      <label for="a11y-adhd">ADHD Mode</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-adhd" onchange="toggleA11y('adhd-mode', this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">Visual</div>
+    <div class="a11y-option">
+      <label for="a11y-darkMode">Dark Mode</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-darkMode" onchange="toggleDarkMode(this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="a11y-option">
+      <label for="a11y-highContrast">High Contrast</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-highContrast" onchange="toggleA11y('high-contrast', this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="a11y-option">
+      <label for="a11y-saturation">Saturation</label>
+      <input type="range" class="a11y-slider" id="a11y-slider-saturation" min="0" max="2" value="1"
+             oninput="this.style.filter=`saturate(${this.value})`">
+    </div>
+    <div class="a11y-option">
+      <label for="a11y-hideImages">Hide Images</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-hideImages" onchange="toggleA11y('hide-images', this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="a11y-section">
+    <div class="a11y-section-title">Motion</div>
+    <div class="a11y-option">
+      <label for="a11y-reduceMotion">Reduce Motion</label>
+      <label class="a11y-toggle">
+        <input type="checkbox" id="a11y-reduceMotion" onchange="toggleA11y('reduce-motion', this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="a11y-section">
+    <button class="a11y-btn-reset" onclick="resetA11y()">Reset All Settings</button>
+  </div>
+</div>
+
+<!-- ═══════ Modal Overlay ═══════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeAllModals()">
+  <div class="modal-dialog" id="modal-content" onclick="event.stopPropagation()"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/widgets.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
