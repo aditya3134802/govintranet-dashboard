@@ -502,10 +502,10 @@ const WIDGET_REGISTRY = [
     size: "large",
     defaultConfig: {},
     render() {
-      const totalTasks = PROJECT_DATA.tasks.length;
-      const openTasks = PROJECT_DATA.tasks.filter(t => t.status === "open" || t.status === "backlog").length;
-      const doneTasks = PROJECT_DATA.tasks.filter(t => t.status === "done").length;
-      const qaTasks = PROJECT_DATA.tasks.filter(t => t.status === "qa").length;
+      const totalTasks = TASKS.length;
+      const openTasks = TASKS.filter(t => t.status === "open" || t.status === "backlog").length;
+      const doneTasks = TASKS.filter(t => t.status === "done").length;
+      const qaTasks = TASKS.filter(t => t.status === "qa").length;
       const openTrackers = PROJECT_DATA.trackers.reduce((s, t) => s + t.open, 0);
       const pct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
@@ -577,7 +577,7 @@ const WIDGET_REGISTRY = [
     defaultConfig: { trackerId: "tasks" },
     render(cfg) {
       const tracker = PROJECT_DATA.trackers.find(t => t.id === cfg.trackerId) || PROJECT_DATA.trackers[0];
-      const tasks = PROJECT_DATA.tasks.filter(t => t.tracker === tracker.id).slice(0, 6);
+      const tasks = TASKS.filter(t => t.tracker === tracker.id).slice(0, 6);
       return `<div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border-color)">
           <div style="width:32px;height:32px;border-radius:8px;background:${tracker.color}15;color:${tracker.color};display:flex;align-items:center;justify-content:center;font-size:16px">${tracker.icon}</div>

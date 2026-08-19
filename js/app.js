@@ -4,6 +4,7 @@ let draggedCard = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   initDashboardManager();
+  initUserSelector();
   renderKanbanBoard();
   renderIssues();
   setupNavigation();
@@ -62,6 +63,36 @@ function setupSearch() {
   }
 }
 
+// ── User Selector ──
+function initUserSelector() {
+  const select = document.getElementById("user-select");
+  if (!select) return;
+  
+  const current = getCurrentUser();
+  select.innerHTML = ALL_MEMBERS.map(m => 
+    `<option value="${m.name}" ${m.name === current ? "selected" : ""}>${m.name}${isAdmin(m.name) ? " ★" : ""}</option>`
+  ).join("");
+  
+  updateUserAvatar(current);
+}
+
+function onUserChange(name) {
+  setCurrentUser(name);
+  updateUserAvatar(name);
+  renderKanbanBoard();
+  renderIssues();
+}
+
+function updateUserAvatar(name) {
+  const avatar = document.getElementById("user-avatar");
+  if (avatar) {
+    const initials = name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
+    avatar.textContent = initials;
+    avatar.title = name + (isAdmin(name) ? " (Admin)" : "");
+    avatar.style.background = isAdmin(name) ? "var(--accent)" : "var(--bg-tertiary)";
+  }
+}
+
 // ── Navigate to board ──
 function navigateToBoard(boardId) {
   currentBoard = boardId;
@@ -72,7 +103,7 @@ function navigateToBoard(boardId) {
 
 // ── Kanban Board ──
 function getFilteredTasks(trackerFilter) {
-  let tasks = PROJECT_DATA.tasks;
+  let tasks = TASKS;
   if (trackerFilter && trackerFilter !== "all") {
     tasks = tasks.filter(t => t.tracker === trackerFilter);
   }
@@ -80,7 +111,7 @@ function getFilteredTasks(trackerFilter) {
     tasks = tasks.filter(t => t.project === currentFilter.project);
   }
   if (currentFilter.assignee !== "all") {
-    tasks = tasks.filter(t => t.assignee === currentFilter.assignee);
+    tasks = tasks.filter(t => t.assignee.includes(currentFilter.assignee));
   }
   if (currentFilter.search) {
     tasks = tasks.filter(t =>
@@ -125,6 +156,15 @@ function renderKanbanBoard() {
 
 function renderKanbanCard(task) {
   const pColor = PRIORITY_COLORS[task.priority] || "#6c757d";
+  const adminControls = isCurrentUserAdmin() ? `
+    <div class="kanban-card-assign" onclick="event.stopPropagation()">
+      <select class="kanban-assign-select" onchange="assignTask(${task.id}, this.value)">
+        <option value="">Unassigned</option>
+        ${ALL_MEMBERS.map(m => `<option value="${m.name}" ${task.assignee.includes(m.name) ? "selected" : ""}>${m.name}</option>`).join("")}
+      </select>
+    </div>
+  ` : `<span class="kanban-card-assignee">${task.assignee || "Unassigned"}</span>`;
+  
   return `
     <div class="kanban-card" draggable="true" data-id="${task.id}"
          ondragstart="handleDragStart(event, ${task.id})"
@@ -133,11 +173,19 @@ function renderKanbanCard(task) {
       <div class="kanban-card-title">${task.title}</div>
       <div class="kanban-card-meta">
         <span class="kanban-card-priority" style="background:${pColor}">${task.priority}</span>
-        <span class="kanban-card-assignee">${task.assignee}</span>
+        ${adminControls}
       </div>
       <div class="kanban-card-project">${task.project}</div>
     </div>
   `;
+}
+
+function assignTask(taskId, newAssignee) {
+  const task = TASKS.find(t => t.id === taskId);
+  if (task && isCurrentUserAdmin()) {
+    task.assignee = newAssignee || "Unassigned";
+    renderKanbanBoard();
+  }
 }
 
 // ── Drag & Drop ──
@@ -174,7 +222,7 @@ function handleDrop(e, newStatus) {
   e.preventDefault();
   e.currentTarget.classList.remove("drag-over");
   const taskId = parseInt(e.dataTransfer.getData("text/plain"));
-  const task = PROJECT_DATA.tasks.find(t => t.id === taskId);
+  const task = TASKS.find(t => t.id === taskId);
   if (task && task.status !== newStatus) {
     task.status = newStatus;
     renderKanbanBoard();

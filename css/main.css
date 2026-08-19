@@ -1046,6 +1046,27 @@ body {
   font-weight: 500;
 }
 
+.kanban-card-assign {
+  flex-shrink: 0;
+}
+
+.kanban-assign-select {
+  font-size: 10px;
+  padding: 2px 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  max-width: 120px;
+  cursor: pointer;
+}
+
+.user-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .kanban-card-project {
   font-size: 10px;
   color: var(--text-secondary);

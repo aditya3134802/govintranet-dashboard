@@ -108,7 +108,11 @@
       <input type="text" id="global-search" placeholder="Search tasks..." class="filter-select" style="width:200px">
       <button class="top-bar-btn" onclick="document.querySelector('.a11y-panel').classList.toggle('open')">♿ A11y</button>
       <button class="top-bar-btn primary">+ New</button>
-      <div class="user-avatar" title="Aditya Kumar">AK</div>
+      <div class="user-select-wrapper">
+        <select id="user-select" class="filter-select" onchange="onUserChange(this.value)" style="width:160px;font-size:11px">
+        </select>
+        <div class="user-avatar" id="user-avatar" title="Current User">AK</div>
+      </div>
     </div>
   </header>
 
@@ -307,6 +311,7 @@
 </div>
 
 <script src="js/data.js"></script>
+<script src="js/tasks.js"></script>
 <script src="js/widgets.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/app.js"></script>
