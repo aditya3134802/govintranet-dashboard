@@ -9,6 +9,13 @@ let dashboards = [];
 let activeDashboardId = null;
 let widgetDragState = { dragging: null, over: null };
 
+// ── Live Refresh ──
+function refreshDashboard() {
+  renderActiveDashboard();
+  renderKanbanBoard();
+  renderIssues();
+}
+
 // ── Init ──
 function initDashboardManager() {
   loadDashboards();

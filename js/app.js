@@ -79,8 +79,7 @@ function initUserSelector() {
 function onUserChange(name) {
   setCurrentUser(name);
   updateUserAvatar(name);
-  renderKanbanBoard();
-  renderIssues();
+  refreshDashboard();
 }
 
 function updateUserAvatar(name) {
@@ -184,8 +183,85 @@ function assignTask(taskId, newAssignee) {
   const task = TASKS.find(t => t.id === taskId);
   if (task && isCurrentUserAdmin()) {
     task.assignee = newAssignee || "Unassigned";
-    renderKanbanBoard();
+    refreshDashboard();
   }
+}
+
+// ── Add Task Modal ──
+function showAddTaskModal() {
+  const modal = document.getElementById("modal-overlay");
+  const content = document.getElementById("modal-content");
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <div class="modal-header">
+      <h2>Create New Task</h2>
+      <button class="modal-close" onclick="closeAllModals()">×</button>
+    </div>
+    <div class="modal-body">
+      <label class="modal-label">Title *</label>
+      <input type="text" id="new-task-title" class="modal-input" placeholder="Task title" autofocus>
+
+      <label class="modal-label" style="margin-top:12px">Project</label>
+      <select id="new-task-project" class="modal-input">
+        ${PROJECT_DATA.projects.map(p => `<option value="${p}">${p}</option>`).join("")}
+      </select>
+
+      <label class="modal-label" style="margin-top:12px">Priority</label>
+      <select id="new-task-priority" class="modal-input">
+        <option value="low">Low</option>
+        <option value="normal" selected>Normal</option>
+        <option value="high">High</option>
+        <option value="urgent">Urgent</option>
+      </select>
+
+      <label class="modal-label" style="margin-top:12px">Assignee</label>
+      <select id="new-task-assignee" class="modal-input">
+        <option value="Unassigned">Unassigned</option>
+        ${ALL_MEMBERS.map(m => `<option value="${m.name}">${m.name}</option>`).join("")}
+      </select>
+
+      <label class="modal-label" style="margin-top:12px">Status</label>
+      <select id="new-task-status" class="modal-input">
+        <option value="backlog">Backlog</option>
+        <option value="open" selected>Open</option>
+        <option value="qa">QA Testing</option>
+        <option value="done">Done</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="top-bar-btn primary" onclick="createTask()">Create Task</button>
+      <button class="top-bar-btn" onclick="closeAllModals()">Cancel</button>
+    </div>`;
+
+  modal.classList.add("open");
+  document.getElementById("new-task-title")?.focus();
+}
+
+function createTask() {
+  const title = document.getElementById("new-task-title")?.value.trim();
+  if (!title) { alert("Title is required"); return; }
+
+  const project = document.getElementById("new-task-project")?.value;
+  const priority = document.getElementById("new-task-priority")?.value;
+  const assignee = document.getElementById("new-task-assignee")?.value;
+  const status = document.getElementById("new-task-status")?.value;
+
+  const newId = Math.max(...TASKS.map(t => t.id)) + 1;
+
+  TASKS.push({
+    id: newId,
+    title: title,
+    status: status,
+    tracker: "tasks",
+    priority: priority,
+    assignee: assignee || "Unassigned",
+    project: project,
+    submittedBy: getCurrentUser()
+  });
+
+  closeAllModals();
+  refreshDashboard();
 }
 
 // ── Drag & Drop ──
@@ -225,7 +301,7 @@ function handleDrop(e, newStatus) {
   const task = TASKS.find(t => t.id === taskId);
   if (task && task.status !== newStatus) {
     task.status = newStatus;
-    renderKanbanBoard();
+    refreshDashboard();
   }
 }
 
